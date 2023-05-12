@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-import Session from "./components/Session";
+import Session from "@/components/Session";
 
 export default function SessionPage() {
   return (

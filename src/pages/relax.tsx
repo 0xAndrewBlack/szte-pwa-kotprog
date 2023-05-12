@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-import Relax from "./components/Relax";
+import Relax from "@/components/Relax";
 
 export default function RelaxPage() {
   return (
