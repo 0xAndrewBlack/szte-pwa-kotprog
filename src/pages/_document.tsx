@@ -1,6 +1,6 @@
 import { Head, Html, Main, NextScript } from "next/document";
 
-const APP_NAME = "PWA Kotprog 2023 - Chillzone";
+const APP_NAME = "Chillzone";
 const APP_DESCRIPTION = "This is an example of using the next-pwa plugin";
 
 export default function Document() {
@@ -14,7 +14,7 @@ export default function Document() {
         <meta name="description" content={APP_DESCRIPTION} />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#FFFFFF" />
+        <meta name="theme-color" content="#65A30D" />
         {/* TIP: set viewport head meta tag in _app.js, otherwise it will show a warning */}
         {/* <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover' /> */}
 
