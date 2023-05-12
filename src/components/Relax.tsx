@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function Relax() {
+export default function Relax({ quotes }: any) {
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -9,6 +9,14 @@ export default function Relax() {
         </main>
 
         <Image src="https://source.unsplash.com/600x400/?cat" alt="random cat" width={600} height={400} />
+
+        <div>
+          {quotes.map((quote: any) => (
+            <p key={quote.id} className="flex justify-center flex-1 px-20 text-center">
+              {quote.quote} ~ {quote.author}
+            </p>
+          ))}
+        </div>
       </div>
     </>
   );
