@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function HomePage() {
   return (
     <>
@@ -8,12 +10,12 @@ export default function HomePage() {
           </h1>
 
           <div className="flex flex-row justify-center space-x-4 mt-10">
-            <a href="/session" className="bg-lime-500 hover:bg-lime-700 text-white font-bold py-2 px-4 rounded">
+            <Link href="/session" className="bg-lime-500 hover:bg-lime-700 text-white font-bold py-2 px-4 rounded">
               Start a session
-            </a>
-            <a href="/relax" className="bg-lime-500 hover:bg-lime-700 text-white font-bold py-2 px-4 rounded">
+            </Link>
+            <Link href="/relax" className="bg-lime-500 hover:bg-lime-700 text-white font-bold py-2 px-4 rounded">
               Relax with sounds
-            </a>
+            </Link>
           </div>
         </main>
       </div>
