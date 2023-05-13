@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 export default function Session() {
   const [displayTime, setDisplayTime] = useState("");
   const [sessionDuration, setSessionDuration] = useState(1);
-  const [counterId, setCounterId] = useState([]);
-  const [sessionState, setSessionState] = useState("inactive");
-  const [error, setError] = useState(false);
 
-  const startCounter = (duration: any) => {
+  const [error, setError] = useState(false);
+  const [sessionState, setSessionState] = useState("inactive");
+
+  const [counterId, setCounterId] = useState<NodeJS.Timer[]>([]);
+  const [counterRef, setCounterRef] = useState<NodeJS.Timer>();
+
+  const startCounter = (duration: number) => {
     setDisplayTime(`0${sessionDuration}:00`);
 
     let timer = duration * 60;
@@ -31,22 +34,30 @@ export default function Session() {
 
       if (displayTime === "00:00" || timer === 0) {
         clearInterval(counter);
+
         setSessionState("completed");
       }
     }, 1000);
 
-    // @ts-ignore
     setCounterId([...counterId, counter]);
+    setCounterRef(counter);
   };
 
   useEffect(() => {
-    const handleMouseMove = () => {
+    const handleMovement = () => {
       if (sessionState === "active") {
+        location.reload();
+
         setError(true);
+
         counterId.forEach((counter) => {
+          console.log("clearing", counter);
+
           clearInterval(counter);
         });
+
         startCounter(sessionDuration);
+
         setTimeout(() => {
           setError(false);
         }, 2000);
@@ -55,16 +66,18 @@ export default function Session() {
 
     const handleTabChange = () => {
       console.log("tab changed");
-      handleMouseMove();
+
+      handleMovement();
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMovement);
     window.addEventListener("focus", handleTabChange);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousemove", handleMovement);
       window.removeEventListener("focus", handleTabChange);
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [counterId, displayTime, sessionDuration, sessionState]);
 
@@ -118,8 +131,8 @@ export default function Session() {
             </div>
 
             <div className="success mt-10" style={{ display: sessionState === "completed" ? "block" : "none" }}>
-              <h1>You did it</h1>
-              <h2>Remember, it&apos;s okay to take a break.</h2>
+              <h1 className="text-bold text-lime-500">You did it</h1>
+              <h2 className="text-lime-500">Remember, it&apos;s okay to take a break.</h2>
               <button
                 onClick={() => setSessionState("inactive")}
                 className="bg-lime-500 hover:bg-lime-600 text-white rounded-full px-4 py-2 mt-4">
@@ -127,19 +140,23 @@ export default function Session() {
               </button>
             </div>
 
-            <div className="timer mt-10" style={{ display: sessionState === "active" ? "block" : "none" }}>
-              <h2>{displayTime}</h2>
+            <div
+              className="timer mt-10 tex-bold text-lime-500 mt-20 mb-20"
+              style={{ display: sessionState === "active" ? "block" : "none" }}>
+              <h2 className="text-lg font-bold m-20">{displayTime}</h2>
               <p>Don&apos;t move your cursor. Just sit back, relax &amp; breathe.</p>
             </div>
 
-            <div className="mt-10">
+            <div
+              className="mt-10"
+              style={{ display: sessionState === "completed" || sessionState === "inactive" ? "block" : "none" }}>
               <Link href="/" className="start-btn bg-lime-500 hover:bg-lime-600 text-white rounded px-4 py-2 mt-10">
                 Home
               </Link>
             </div>
 
             <div className="error mt-10" style={{ display: error ? "block" : "none" }}>
-              <h2>Oops! Try Again.</h2>
+              <h2 className="text-red-500 font-bold">Oops! Try Again.</h2>
             </div>
 
             <footer
