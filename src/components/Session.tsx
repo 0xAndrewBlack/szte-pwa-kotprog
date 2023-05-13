@@ -117,12 +117,6 @@ export default function Session() {
               </button>
             </div>
 
-            <div className="mt-10">
-              <Link href="/" className="start-btn bg-lime-500 hover:bg-lime-600 text-white rounded px-4 py-2 mt-10">
-                Home
-              </Link>
-            </div>
-
             <div className="success mt-10" style={{ display: sessionState === "completed" ? "block" : "none" }}>
               <h1>You did it</h1>
               <h2>Remember, it&apos;s okay to take a break.</h2>
@@ -136,6 +130,12 @@ export default function Session() {
             <div className="timer mt-10" style={{ display: sessionState === "active" ? "block" : "none" }}>
               <h2>{displayTime}</h2>
               <p>Don&apos;t move your cursor. Just sit back, relax &amp; breathe.</p>
+            </div>
+
+            <div className="mt-10">
+              <Link href="/" className="start-btn bg-lime-500 hover:bg-lime-600 text-white rounded px-4 py-2 mt-10">
+                Home
+              </Link>
             </div>
 
             <div className="error mt-10" style={{ display: error ? "block" : "none" }}>
