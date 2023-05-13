@@ -17,6 +17,15 @@ export default function HomePage() {
               Relax with sounds
             </Link>
           </div>
+
+          <footer className="mt-10">
+            <Link
+              href="https://github.com/0xAndrewBlack/szte-pwa-kotprog"
+              target="_blank"
+              className="text-lime-500 hover:text-lime-600">
+              github.com/chillzone
+            </Link>
+          </footer>
         </main>
       </div>
     </>
