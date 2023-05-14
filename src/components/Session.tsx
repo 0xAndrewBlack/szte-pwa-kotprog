@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { timer } from "rxjs";
+import { map, take } from "rxjs/operators";
+
 export default function Session() {
   const [displayTime, setDisplayTime] = useState("");
   const [sessionDuration, setSessionDuration] = useState(1);
@@ -14,33 +17,25 @@ export default function Session() {
   const startCounter = (duration: number) => {
     setDisplayTime(`0${sessionDuration}:00`);
 
-    let timer = duration * 60;
-    let minutes, seconds;
+    const timer$ = timer(0, 1000).pipe(
+      take(duration * 60),
+      map((tick) => duration * 60 - tick - 1),
+    );
 
-    const counter = setInterval(() => {
-      minutes = parseInt((timer / 60) as any, 10);
-      seconds = parseInt((timer % 60) as any, 10);
+    const subscription = timer$.subscribe((timer) => {
+      const minutes = Math.floor(timer / 60);
+      const seconds = timer % 60;
 
-      minutes = minutes < 10 ? `0${minutes}` : minutes;
-      seconds = seconds < 10 ? `0${seconds}` : seconds;
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+      const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
 
-      setDisplayTime(`${minutes}:${seconds}`);
+      setDisplayTime(`${formattedMinutes}:${formattedSeconds}`);
 
-      if (--timer < 0) {
-        timer = duration * 60;
-      }
-
-      console.log(timer);
-
-      if (displayTime === "00:00" || timer === 0) {
-        clearInterval(counter);
-
+      if (timer === 0) {
+        subscription.unsubscribe();
         setSessionState("completed");
       }
-    }, 1000);
-
-    setCounterId([...counterId, counter]);
-    setCounterRef(counter);
+    });
   };
 
   useEffect(() => {

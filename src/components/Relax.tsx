@@ -1,10 +1,14 @@
-import Link from "next/link";
+import { Quote } from "@/types";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-export default function Relax({ quotes }: any) {
+import { interval } from "rxjs";
+import { take } from "rxjs/operators";
+
+export default function Relax({ quotes }: { quotes: Quote[] }) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [randomQuote, setRandomQuote] = useState<any>(null);
+  const [randomQuote, setRandomQuote] = useState<Quote>(null as unknown as Quote);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -23,17 +27,18 @@ export default function Relax({ quotes }: any) {
   useEffect(() => {
     const getRandomQuote = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
-
       return quotes[randomIndex];
     };
 
     setRandomQuote(getRandomQuote());
 
-    const interval = setInterval(() => {
-      setRandomQuote(getRandomQuote());
-    }, 10_000);
+    const interval$ = interval(10000).pipe(take(quotes.length));
 
-    return () => clearInterval(interval);
+    const subscription = interval$.subscribe(() => {
+      setRandomQuote(getRandomQuote());
+    });
+
+    return () => subscription.unsubscribe();
   }, [quotes]);
 
   return (
