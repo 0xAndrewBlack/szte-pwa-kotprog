@@ -1,12 +1,13 @@
+import Head from "next/head";
 import { useEffect, useState } from "react";
 
-import Head from "next/head";
-
 import Relax from "@/components/Relax";
+import { Quote } from "@/types";
+
 import quotes from "../helpers/quotes.json";
 
 export default function RelaxPage() {
-  const [apiData, setApiData] = useState("");
+  const [apiData, setApiData] = useState<Quote[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,18 +16,14 @@ export default function RelaxPage() {
         const data = await response.json();
 
         setApiData(data.quotes);
-      } catch (error) {
-        console.log(quotes);
+      } catch (e: any) {
+        console.log(e);
 
-        setApiData(quotes as any);
+        setApiData(quotes as Quote[]);
       }
     };
 
-    const interval = setInterval(fetchData, 5000);
-
     fetchData();
-
-    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -35,7 +32,7 @@ export default function RelaxPage() {
         <title>Chillzone - Relax</title>
       </Head>
 
-      {apiData && <Relax quotes={apiData} />}
+      {apiData && <Relax quotes={apiData as Quote[]} />}
     </>
   );
 }

@@ -1,23 +1,28 @@
-import Link from "next/link";
+import { addToDatabase } from "@/helpers/idb";
+import { Quote } from "@/types";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-export default function Relax({ quotes }: any) {
+import { interval } from "rxjs";
+import { take } from "rxjs/operators";
+
+export default function Relax({ quotes }: { quotes: Quote[] }) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [randomQuote, setRandomQuote] = useState<any>(null);
+  const [randomQuote, setRandomQuote] = useState<Quote>(null as unknown as Quote);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const togglePlay = () => {
-    if (audioRef.current && audioRef.current.paused) {
-      audioRef.current.play();
-
-      setIsPlaying(true);
-    } else {
+    if (!audioRef.current || !audioRef.current.paused) {
       audioRef.current?.pause();
-
       setIsPlaying(false);
+
+      return;
     }
+
+    audioRef.current.play();
+    setIsPlaying(true);
   };
 
   useEffect(() => {
@@ -29,12 +34,15 @@ export default function Relax({ quotes }: any) {
 
     setRandomQuote(getRandomQuote());
 
-    const interval = setInterval(() => {
-      setRandomQuote(getRandomQuote());
-    }, 10_000);
+    const interval$ = interval(10000).pipe(take(quotes.length));
 
-    return () => clearInterval(interval);
-  }, [quotes]);
+    const subscription = interval$.subscribe(() => {
+      addToDatabase(randomQuote);
+      setRandomQuote(getRandomQuote());
+    });
+
+    return () => subscription.unsubscribe();
+  }, [quotes, randomQuote]);
 
   return (
     <>
