@@ -1,3 +1,4 @@
+import { addToDatabase } from "@/helpers/idb";
 import { Quote } from "@/types";
 
 import Link from "next/link";
@@ -13,20 +14,21 @@ export default function Relax({ quotes }: { quotes: Quote[] }) {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const togglePlay = () => {
-    if (audioRef.current && audioRef.current.paused) {
-      audioRef.current.play();
-
-      setIsPlaying(true);
-    } else {
+    if (!audioRef.current || !audioRef.current.paused) {
       audioRef.current?.pause();
-
       setIsPlaying(false);
+
+      return;
     }
+
+    audioRef.current.play();
+    setIsPlaying(true);
   };
 
   useEffect(() => {
     const getRandomQuote = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
+
       return quotes[randomIndex];
     };
 
@@ -35,11 +37,12 @@ export default function Relax({ quotes }: { quotes: Quote[] }) {
     const interval$ = interval(10000).pipe(take(quotes.length));
 
     const subscription = interval$.subscribe(() => {
+      addToDatabase(randomQuote);
       setRandomQuote(getRandomQuote());
     });
 
     return () => subscription.unsubscribe();
-  }, [quotes]);
+  }, [quotes, randomQuote]);
 
   return (
     <>
